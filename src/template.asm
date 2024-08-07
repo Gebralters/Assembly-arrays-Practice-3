@@ -1,6 +1,5 @@
-;	Update all of this information to reflect your own details and the prac
-;	Author:     Dr J du Toit
-;	Template document
+;	Author:     LG KAKA
+
 .386
 .MODEL FLAT ; Flat memory model
 .STACK 4096 ; 4096 bytes
