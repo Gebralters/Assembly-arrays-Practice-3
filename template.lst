@@ -1,0 +1,77 @@
+Microsoft (R) Macro Assembler Version 6.11		    07/24/24 22:20:37
+src\template.asm					     Page 1 - 1
+
+
+				;	Update all of this information to reflect your own details and the prac
+				;	Author:     Dr J du Toit
+				;	Template document
+				.386
+				.MODEL FLAT ; Flat memory model
+				.STACK 4096 ; 4096 bytes
+
+				; Exit function
+				ExitProcess PROTO NEAR32 stdcall, dwExitCode:DWORD
+
+				; The data section stores all global variables
+ 00000000			.DATA
+
+ 00000000 00000014		NUM1 DWORD 20
+ 00000004 00000014		NUM2 DWORD 20
+ 00000008 00000000		ANS DWORD ?
+
+
+ 00000000			.CODE
+ 00000000			_start:
+ 00000000  A1 00000000 R		MOV  EAX , NUM1
+ 00000005  8B 1D 00000004 R		MOV EBX, NUM2
+ 0000000B  F7 E3			MUL EBX
+ 0000000D  BB 0000000A			MOV EBX , 10
+ 00000012  F7 F3			DIV EBX
+ 00000014  A3 00000008 R		MOV ANS, EAX
+					INVOKE ExitProcess, 0
+ 00000020			Public _start
+				END
+Microsoft (R) Macro Assembler Version 6.11		    07/24/24 22:20:37
+src\template.asm					     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 0000000C DWord	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000020 DWord	  Public  'CODE'	
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+$$$$$$00001  . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000020 Private
+ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000000h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+ANS  . . . . . . . . . . . . . .	DWord	 00000008 _DATA	
+NUM1 . . . . . . . . . . . . . .	DWord	 00000000 _DATA	
+NUM2 . . . . . . . . . . . . . .	DWord	 00000004 _DATA	
+_start . . . . . . . . . . . . .	L Near	 00000000 _TEXT	Public
+
+	   0 Warnings
+	   0 Errors
