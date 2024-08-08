@@ -20,6 +20,9 @@ strbias   BYTE "Enter the bias:",0
 strkernel BYTE "Enter the kernel:",0
 strprompt BYTE "Enter the number in the array on index ",0
 strcolon  BYTE ":",0
+stropenbracket  BYTE "[",0
+strclosebracket  BYTE "]",10,0
+strcomma  BYTE ",",0
 strNL     BYTE 10,0
 
 
@@ -36,6 +39,7 @@ _start:
  mov kernel, exitprogram
 
  mov ecx, 0
+  mov eax, 0
 InputA:
    INVOKE OutputStr, ADDR strprompt
    INVOKE OutputInt, ecx
@@ -47,7 +51,28 @@ InputA:
    
    INVOKE InputInt
    mov [ebx], eax
-  
+   INVOKE OutputStr, ADDR strNL
+   inc ecx
+   cmp ecx, 4
+   jl InputA
+
+  mov ecx,0
+  mov eax,0
+  INVOKE OutputStr, ADDR stropenbracket
+Outputloop:
+  INVOKE OutputStr, ADDR stropenbracket
+    lea     ebx , array
+   imul    eax, ecx,4
+   add     ebx, eax
+
+   INVOKE OutputInt, [ebx]
+   INVOKE Output,ADDR strcomma
+
+   inc ecx
+   cmp ecx, 4
+   jl Outputloop
+
+   INVOKE OutputStr, ADDR strclosebracket
 
 exitprogram:
 	INVOKE ExitProcess, 0
