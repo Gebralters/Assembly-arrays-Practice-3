@@ -1,37 +1,85 @@
-Microsoft (R) Macro Assembler Version 6.11		    07/24/24 22:20:37
+Microsoft (R) Macro Assembler Version 6.11		    08/08/24 08:50:59
 src\template.asm					     Page 1 - 1
 
 
-				;	Update all of this information to reflect your own details and the prac
-				;	Author:     Dr J du Toit
-				;	Template document
+				;	Author:     LG KAKA
+
 				.386
 				.MODEL FLAT ; Flat memory model
 				.STACK 4096 ; 4096 bytes
+
+				INCLUDE io.inc
+			      C ;
+			      C ; Simple I/O Routines - Version 2
+			      C ;
+			      C 
+			      C IFNDEF IO_INC
+ = 1			      C IO_INC equ <1>
+			      C 
+			      C OutputStr PROTO NEAR32 STDCALL :DWORD
+			      C OutputInt PROTO NEAR32 STDCALL :DWORD
+			      C OutputFloat PROTO NEAR32 STDCALL :DWORD
+			      C OutputFloat8 PROTO NEAR32 STDCALL :QWORD
+			      C InputInt PROTO NEAR32 STDCALL
+			      C InputStr PROTO NEAR32 STDCALL :DWORD, :DWORD
+			      C 
+			      C ELSE
+			      C ENDIF
+			      C 
 
 				; Exit function
 				ExitProcess PROTO NEAR32 stdcall, dwExitCode:DWORD
 
 				; The data section stores all global variables
  00000000			.DATA
+				;<=========================gLOBAL VARIABLES================================>
+ 00000000 00000000		kernel DWORD ?
+ 00000004 00000000		bias DWORD ?
+ 00000008  00000004 [		array DWORD 4 DUP (?)
+	    00000000
+	   ]
 
- 00000000 00000014		NUM1 DWORD 20
- 00000004 00000014		NUM2 DWORD 20
- 00000008 00000000		ANS DWORD ?
+ 00000018 45 6E 74 65 72	strbias   BYTE "Enter the bias:",0
+	   20 74 68 65 20
+	   62 69 61 73 3A
+	   00
+ 00000028 45 6E 74 65 72	strkernel BYTE "Enter the kernel:",0
+	   20 74 68 65 20
+	   6B 65 72 6E 65
+	   6C 3A 00
+ 0000003A 45 6E 74 65 72	strprompt BYTE "Enter the number in the array on index ",0
+	   20 74 68 65 20
+	   6E 75 6D 62 65
+	   72 20 69 6E 20
+	   74 68 65 20 61
+	   72 72 61 79 20
+	   6F 6E 20 69 6E
+	   64 65 78 20 00
+ 00000062 3A 00			strcolon  BYTE ":",0
+ 00000064 0A 00			strNL     BYTE 10,0
+
 
 
  00000000			.CODE
  00000000			_start:
- 00000000  A1 00000000 R		MOV  EAX , NUM1
- 00000005  8B 1D 00000004 R		MOV EBX, NUM2
- 0000000B  F7 E3			MUL EBX
- 0000000D  BB 0000000A			MOV EBX , 10
- 00000012  F7 F3			DIV EBX
- 00000014  A3 00000008 R		MOV ANS, EAX
+ 00000000
+				 INVOKE OutputStr, ADDR strbias
+				 INVOKE InputInt
+ 0000000F  C7 05 00000004 R	 mov bias, exitprogram
+	   00000032 R
+
+				 INVOKE OutputStr, ADDR strkernel
+				 INVOKE InputInt
+ 00000028  C7 05 00000000 R	 mov kernel, exitprogram
+	   00000032 R
+
+
+
+ 00000032			exitprogram:
 					INVOKE ExitProcess, 0
- 00000020			Public _start
+ 00000039			Public _start
 				END
-Microsoft (R) Macro Assembler Version 6.11		    07/24/24 22:20:37
+Microsoft (R) Macro Assembler Version 6.11		    08/08/24 08:50:59
 src\template.asm					     Symbols 2 - 1
 
 
@@ -43,16 +91,23 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 0000000C DWord	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000020 DWord	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000066 DWord	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000039 DWord	  Public  'CODE'	
 
 
 Procedures,  parameters and locals:
 
                 N a m e                 Type     Value    Attr
 
-$$$$$$00001  . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000020 Private
+$$$$$$00001  . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000039 Private
+  exitprogram  . . . . . . . . .	L Near	 00000032 _TEXT	
 ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+InputInt . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+InputStr . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+OutputFloat8 . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+OutputFloat  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+OutputInt  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+OutputStr  . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 
 
 Symbols:
@@ -68,10 +123,17 @@ Symbols:
 @fardata?  . . . . . . . . . . .	Text   	 FLAT
 @fardata . . . . . . . . . . . .	Text   	 FLAT
 @stack . . . . . . . . . . . . .	Text   	 FLAT
-ANS  . . . . . . . . . . . . . .	DWord	 00000008 _DATA	
-NUM1 . . . . . . . . . . . . . .	DWord	 00000000 _DATA	
-NUM2 . . . . . . . . . . . . . .	DWord	 00000004 _DATA	
+IO_INC . . . . . . . . . . . . .	Text   	 1
 _start . . . . . . . . . . . . .	L Near	 00000000 _TEXT	Public
+array  . . . . . . . . . . . . .	DWord	 00000008 _DATA	
+bias . . . . . . . . . . . . . .	DWord	 00000004 _DATA	
+exitprogram  . . . . . . . . . .	L Near	 00000032 _TEXT	
+kernel . . . . . . . . . . . . .	DWord	 00000000 _DATA	
+strNL  . . . . . . . . . . . . .	Byte	 00000064 _DATA	
+strbias  . . . . . . . . . . . .	Byte	 00000018 _DATA	
+strcolon . . . . . . . . . . . .	Byte	 00000062 _DATA	
+strkernel  . . . . . . . . . . .	Byte	 00000028 _DATA	
+strprompt  . . . . . . . . . . .	Byte	 0000003A _DATA	
 
 	   0 Warnings
 	   0 Errors

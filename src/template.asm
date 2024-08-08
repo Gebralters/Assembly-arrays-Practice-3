@@ -35,7 +35,19 @@ _start:
  INVOKE InputInt
  mov kernel, exitprogram
 
-
+ mov ecx, 0
+InputA:
+   INVOKE OutputStr, ADDR strprompt
+   INVOKE OutputInt, ecx
+   INVOKE OutputStr, ADDR strcolon
+   
+   lea     ebx , array
+   imul    eax, ecx,4
+   add     ebx, eax
+   
+   INVOKE InputInt
+   mov [ebx], eax
+  
 
 exitprogram:
 	INVOKE ExitProcess, 0
