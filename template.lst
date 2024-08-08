@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 6.11		    08/08/24 08:50:59
+Microsoft (R) Macro Assembler Version 6.11		    08/08/24 09:16:18
 src\template.asm					     Page 1 - 1
 
 
@@ -56,7 +56,10 @@ src\template.asm					     Page 1 - 1
 	   6F 6E 20 69 6E
 	   64 65 78 20 00
  00000062 3A 00			strcolon  BYTE ":",0
- 00000064 0A 00			strNL     BYTE 10,0
+ 00000064 5B 00			stropenbracket  BYTE "[",0
+ 00000066 5D 0A 00		strclosebracket  BYTE "]",10,0
+ 00000069 2C 00			strcomma  BYTE ",",0
+ 0000006B 0A 00			strNL     BYTE 10,0
 
 
 
@@ -66,20 +69,54 @@ src\template.asm					     Page 1 - 1
 				 INVOKE OutputStr, ADDR strbias
 				 INVOKE InputInt
  0000000F  C7 05 00000004 R	 mov bias, exitprogram
-	   00000032 R
+	   000000B8 R
 
 				 INVOKE OutputStr, ADDR strkernel
 				 INVOKE InputInt
  00000028  C7 05 00000000 R	 mov kernel, exitprogram
-	   00000032 R
+	   000000B8 R
 
+ 00000032  B9 00000000		 mov ecx, 0
+ 00000037  B8 00000000		  mov eax, 0
+ 0000003C			InputA:
+				   INVOKE OutputStr, ADDR strprompt
+				   INVOKE OutputInt, ecx
+				   INVOKE OutputStr, ADDR strcolon
+				   
+ 00000056  8D 1D 00000008 R	   lea     ebx , array
+ 0000005C  6B C1 04		   imul    eax, ecx,4
+ 0000005F  03 D8		   add     ebx, eax
+				   
+				   INVOKE InputInt
+ 00000066  89 03		   mov [ebx], eax
+				   INVOKE OutputStr, ADDR strNL
+ 00000072  41			   inc ecx
+ 00000073  83 F9 04		   cmp ecx, 4
+ 00000076  7C C4		   jl InputA
 
+ 00000078  B9 00000000		  mov ecx,0
+ 0000007D  B8 00000000		  mov eax,0
+				  INVOKE OutputStr, ADDR stropenbracket
+ 0000008C			Outputloop:
+				 
+ 0000008C  8D 1D 00000008 R	    lea     ebx , array
+ 00000092  6B C1 04		   imul    eax, ecx,4
+ 00000095  03 D8		   add     ebx, eax
 
- 00000032			exitprogram:
+				   INVOKE OutputInt, [ebx]
+				   INVOKE OutputStr, ADDR strcomma
+
+ 000000A8  41			   inc ecx
+ 000000A9  83 F9 04		   cmp ecx, 4
+ 000000AC  7C DE		   jl Outputloop
+
+				   INVOKE OutputStr, ADDR strclosebracket
+
+ 000000B8			exitprogram:
 					INVOKE ExitProcess, 0
- 00000039			Public _start
+ 000000BF			Public _start
 				END
-Microsoft (R) Macro Assembler Version 6.11		    08/08/24 08:50:59
+Microsoft (R) Macro Assembler Version 6.11		    08/08/24 09:16:18
 src\template.asm					     Symbols 2 - 1
 
 
@@ -91,16 +128,18 @@ Segments and Groups:
 
 FLAT . . . . . . . . . . . . . .	GROUP
 STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
-_DATA  . . . . . . . . . . . . .	32 Bit	 00000066 DWord	  Public  'DATA'	
-_TEXT  . . . . . . . . . . . . .	32 Bit	 00000039 DWord	  Public  'CODE'	
+_DATA  . . . . . . . . . . . . .	32 Bit	 0000006D DWord	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000000BF DWord	  Public  'CODE'	
 
 
 Procedures,  parameters and locals:
 
                 N a m e                 Type     Value    Attr
 
-$$$$$$00001  . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000039 Private
-  exitprogram  . . . . . . . . .	L Near	 00000032 _TEXT	
+$$$$$$00001  . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 000000BF Private
+  InputA . . . . . . . . . . . .	L Near	 0000003C _TEXT	
+  Outputloop . . . . . . . . . .	L Near	 0000008C _TEXT	
+  exitprogram  . . . . . . . . .	L Near	 000000B8 _TEXT	
 ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 InputInt . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
 InputStr . . . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
@@ -124,15 +163,20 @@ Symbols:
 @fardata . . . . . . . . . . . .	Text   	 FLAT
 @stack . . . . . . . . . . . . .	Text   	 FLAT
 IO_INC . . . . . . . . . . . . .	Text   	 1
+InputA . . . . . . . . . . . . .	L Near	 0000003C _TEXT	
+Outputloop . . . . . . . . . . .	L Near	 0000008C _TEXT	
 _start . . . . . . . . . . . . .	L Near	 00000000 _TEXT	Public
 array  . . . . . . . . . . . . .	DWord	 00000008 _DATA	
 bias . . . . . . . . . . . . . .	DWord	 00000004 _DATA	
-exitprogram  . . . . . . . . . .	L Near	 00000032 _TEXT	
+exitprogram  . . . . . . . . . .	L Near	 000000B8 _TEXT	
 kernel . . . . . . . . . . . . .	DWord	 00000000 _DATA	
-strNL  . . . . . . . . . . . . .	Byte	 00000064 _DATA	
+strNL  . . . . . . . . . . . . .	Byte	 0000006B _DATA	
 strbias  . . . . . . . . . . . .	Byte	 00000018 _DATA	
+strclosebracket  . . . . . . . .	Byte	 00000066 _DATA	
 strcolon . . . . . . . . . . . .	Byte	 00000062 _DATA	
+strcomma . . . . . . . . . . . .	Byte	 00000069 _DATA	
 strkernel  . . . . . . . . . . .	Byte	 00000028 _DATA	
+stropenbracket . . . . . . . . .	Byte	 00000064 _DATA	
 strprompt  . . . . . . . . . . .	Byte	 0000003A _DATA	
 
 	   0 Warnings

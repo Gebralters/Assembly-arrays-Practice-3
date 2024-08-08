@@ -60,13 +60,13 @@ InputA:
   mov eax,0
   INVOKE OutputStr, ADDR stropenbracket
 Outputloop:
-  INVOKE OutputStr, ADDR stropenbracket
+ 
     lea     ebx , array
    imul    eax, ecx,4
    add     ebx, eax
 
    INVOKE OutputInt, [ebx]
-   INVOKE Output,ADDR strcomma
+   INVOKE OutputStr, ADDR strcomma
 
    inc ecx
    cmp ecx, 4
