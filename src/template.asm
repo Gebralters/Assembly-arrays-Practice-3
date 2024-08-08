@@ -27,6 +27,13 @@ strNL     BYTE 10,0
 .CODE
 _start:
 
+ INVOKE OutputStr, ADDR strbias
+ INVOKE InputInt
+ mov bias, exitprogram
+
+ INVOKE OutputStr, ADDR strkernel
+ INVOKE InputInt
+ mov kernel, exitprogram
 
 
 
